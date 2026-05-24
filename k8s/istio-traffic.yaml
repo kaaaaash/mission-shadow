@@ -1,0 +1,68 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+
+metadata:
+  name: shadow-payment
+
+spec:
+  host: shadow-payment-stable
+
+  subsets:
+  - name: stable
+    labels:
+      app: shadow-payment
+
+  - name: canary
+    labels:
+      app: shadow-payment
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+
+metadata:
+  name: shadow-payment
+
+spec:
+  hosts:
+  - "*"
+
+  gateways:
+  - shadow-gateway
+
+  http:
+
+  - name: canary-header
+
+    match:
+    - headers:
+        canary-test:
+          exact: "true"
+
+    route:
+    - destination:
+        host: shadow-payment-canary
+
+        port:
+          number: 80
+
+      weight: 100
+
+  - name: primary
+
+    route:
+    - destination:
+        host: shadow-payment-stable
+
+        port:
+          number: 80
+
+      weight: 95
+
+    - destination:
+        host: shadow-payment-canary
+
+        port:
+          number: 80
+
+      weight: 5

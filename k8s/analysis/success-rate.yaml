@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+
+metadata:
+  name: success-rate
+
+spec:
+  metrics:
+  - name: success-rate
+    interval: 15s
+    count: 3
+
+    successCondition: result >= 0
+
+    provider:
+      prometheus:
+        address: http://prometheus.istio-system.svc.cluster.local:9090
+
+        query: |
+          scalar(sum(rate(payment_requests_total[1m])))
+
+    successCondition: "true"
+
+    provider:
+      prometheus:
+        address: http://prometheus.istio-system.svc.cluster.local:9090
+
+        query: |
+          scalar(
+            sum(rate(payment_requests_total{status="success"}[1m]))
+            /
+            clamp_min(sum(rate(payment_requests_total[1m])), 0.001)
+          )

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: shadow-payment
+
+spec:
+  selector:
+    app: shadow-payment
+
+  ports:
+  - port: 80
+    targetPort: 8000
+
+  type: ClusterIP

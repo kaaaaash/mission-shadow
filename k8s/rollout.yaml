@@ -1,0 +1,104 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+
+metadata:
+  name: shadow-payment
+
+spec:
+  replicas: 4
+
+  selector:
+    matchLabels:
+      app: shadow-payment
+
+  template:
+    metadata:
+      labels:
+        app: shadow-payment
+
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+
+    spec:
+      containers:
+      - name: payment-service
+
+        image: 974066991644.dkr.ecr.us-east-1.amazonaws.com/mission-shadow:v4
+
+        ports:
+        - containerPort: 8000
+
+        env:
+        - name: VERSION
+          value: "v4-chaos-1"
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+          limits:
+            cpu: 200m
+            memory: 256Mi
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+
+          initialDelaySeconds: 10
+          periodSeconds: 10
+
+  strategy:
+    canary:
+      analysis:
+        templates:
+        - templateName: success-rate
+        - templateName: latency-check
+
+
+      stableService: shadow-payment-stable
+      canaryService: shadow-payment-canary
+
+      trafficRouting:
+        istio:
+          virtualService:
+            name: shadow-payment
+
+            routes:
+            - primary
+
+      steps:
+
+      - setWeight: 5
+
+      - pause:
+          duration: 30s
+
+      - setWeight: 25
+
+      - pause:
+          duration: 30s
+
+      - setWeight: 50
+
+      - pause:
+          duration: 30s
+
+      - setWeight: 75
+
+      - pause:
+          duration: 30s
+
+      - setWeight: 100
+

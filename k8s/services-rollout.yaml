@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: shadow-payment-stable
+
+spec:
+  selector:
+    app: shadow-payment
+
+  ports:
+  - port: 80
+    targetPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: shadow-payment-canary
+
+spec:
+  selector:
+    app: shadow-payment
+
+  ports:
+  - port: 80
+    targetPort: 8000

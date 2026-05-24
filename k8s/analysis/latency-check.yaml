@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+
+metadata:
+  name: latency-check
+
+spec:
+  metrics:
+  - name: p95-latency
+    interval: 15s
+    count: 3
+
+    successCondition: "true"
+
+    provider:
+      prometheus:
+        address: http://prometheus.istio-system.svc.cluster.local:9090
+
+        query: |
+          histogram_quantile(
+            0.95,
+            sum(rate(payment_duration_seconds_bucket[1m])) by (le)
+          )
