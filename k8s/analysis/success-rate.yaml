@@ -7,19 +7,12 @@ metadata:
 spec:
   metrics:
   - name: success-rate
-    interval: 15s
-    count: 3
 
-    successCondition: result >= 0
+    interval: 5s
+    count: 1
+    failureLimit: 0
 
-    provider:
-      prometheus:
-        address: http://prometheus.istio-system.svc.cluster.local:9090
-
-        query: |
-          scalar(sum(rate(payment_requests_total[1m])))
-
-    successCondition: "true"
+    successCondition: result >= 0.99
 
     provider:
       prometheus:
