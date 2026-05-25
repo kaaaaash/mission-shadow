@@ -82,7 +82,9 @@ Because infrastructure is expendable. The mission isn't.
 
 When a deployment goes rogue, the system doesn't ask permission. It terminates.
 
-![Auto Rollback](./screenshots/mission-shadow-auto-rollback-demo.mp4)
+<p align="center">
+  <img src="./screenshots/auto-rollback-demo.gif" width="900">
+</p>
 
 **v4 deploys → metrics degrade → analysis fails → canary aborted → stable keeps serving**
 
@@ -194,7 +196,7 @@ mission-shadow/
 ```
 
 ---
-
+<div align=center>
 ## OPERATION TIMELINE
 
 | Day | Objective | Status |
@@ -214,6 +216,7 @@ mission-shadow/
 **Manual rollbacks required:** 0  
 
 ---
+</div>
 
 ## BATTLE-TESTED SCENARIOS
 
@@ -236,7 +239,7 @@ mission-shadow/
 - **Casualties:** Zero
 
 ---
-
+<div align=center>
 ## COST ANALYSIS
 
 | Resource | Cost/hour | Daily Cost |
@@ -245,6 +248,8 @@ mission-shadow/
 | 2x t3.medium nodes | $0.08 | $1.92 |
 | 2x Classic ELB | $0.05 | $1.20 |
 | **TOTAL** | **$0.23** | **$5.52** |
+
+</div>
 
 **Project total:** 7 days × $5.52 = **$38.64**  
 **Remaining credits:** $118 - $39 = **$79**  
